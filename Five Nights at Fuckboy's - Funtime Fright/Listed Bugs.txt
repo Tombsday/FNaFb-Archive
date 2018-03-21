@@ -1,0 +1,3 @@
+FIXED Bug #1: Where You Move Incorrectly when facing a different direction when talking to Bonnie
+
+Bug #2: 

@@ -1,0 +1,7 @@
+[
+null,
+{"id":1,"battlerName":"","characterIndex":0,"characterName":"ShadowParty","classId":1,"equips":[1,1,0,0,0],"faceIndex":0,"faceName":"ShadowFaceset","traits":[],"initialLevel":1,"maxLevel":20,"name":"S. Freddy","nickname":"Shadow Freddy","note":"<equip slot: 1 w1>\n<equip slot: 2 a1>\n<equip slot: 3>\n<equip slot: 4>\n<equip slot: 5>","profile":""},
+{"id":2,"battlerName":"","characterIndex":1,"characterName":"ShadowParty","classId":2,"equips":[1,1,0,0,0],"faceIndex":1,"faceName":"ShadowFaceset","traits":[],"initialLevel":1,"maxLevel":20,"name":"S. Bonnie","nickname":"Shadow Bonnie","note":"<equip slot: 1 w1>\n<equip slot: 2 a1>\n<equip slot: 3>\n<equip slot: 4>\n<equip slot: 5>","profile":""},
+{"id":3,"battlerName":"","characterIndex":0,"characterName":"","classId":1,"equips":[0,0,0,0,0],"faceIndex":0,"faceName":"","traits":[],"initialLevel":1,"maxLevel":99,"name":"","nickname":"","note":"","profile":""},
+{"id":4,"battlerName":"","characterIndex":0,"characterName":"","classId":1,"equips":[0,0,0,0,0],"faceIndex":0,"faceName":"","traits":[],"initialLevel":1,"maxLevel":99,"name":"","nickname":"","note":"","profile":""}
+]

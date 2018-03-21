@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Log in to GameJolt</title>
+		<meta charset="utf-8"/>
+		<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'/>
+		<style>
+			html,body {
+				margin: 0;
+				padding: 0;
+			}
+			body {
+				font-family: arial,sans-serif;
+				font-size: 1em;
+				background-color: #a0a0a0;
+			}
+			header {
+				height: auto;
+				width: 100%;
+				background-color: black;
+				margin: 0;
+				padding: 0;
+			}
+			img#GameJoltLogo {
+				padding: 15px;
+				margin: 0;
+				display: block;
+			}
+			div#main{
+				padding: 15px 15px 15px 15px;
+			}
+			p{
+				margin: 0;
+				padding: 0;
+			}
+			input{
+				border: 2px solid #dadada;
+				outline: none; 
+				box-shadow: none;
+				border-radius: 0;
+				width: 100%;
+				padding: 5px;
+				font-size: 1.2em;
+				box-sizing: border-box;
+			}
+			input:focus{
+				box-shadow: 0 0 5px #9ecaed;
+				outline: none; 
+			}
+			p.input-header{
+				margin-top: 10px;
+				margin-bottom: 2px;
+				font-weight: bold;
+			}
+			a{
+				color: #a0a0a0;
+				text-decoration: none;
+			}
+			a:hover{
+				color: #808080;
+			}
+			a:active{
+				color: #606060;
+			}
+			a:focus{
+				box-shadow: 0 0 5px #9ecaed;
+				outline: none; 
+			}
+			p#token-help-info{
+				display: none;
+				padding: 2px 0px 5px 0px;
+			}
+			p#login-error{
+				display: none;
+				padding: 5px 0px 5px 0px;
+				color: red;
+				font-weight: bold;
+			}
+			button{
+				border: 2px solid #a0a0a0;
+				background-color: #dadada;
+				margin: 0;
+				margin-top: 10px;
+				outline: none;
+				width: 100%;
+				padding: 5px;
+				box-sizing: border-box;
+				font-size: 1.2em;
+			}
+			button:focus{
+				box-shadow: 0 0 5px #9ecaed;
+			}
+			#secondaryOptions{
+				margin-top: 5px;
+				text-align: right;
+				color: #a0a0a0;
+			}
+			#outerDiv{
+				margin: auto;
+				max-width: 1024px;
+				background-color: white;
+				min-height: 100vh;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="outerDiv">
+			<header>
+				<img id="GameJoltLogo" src="GameJoltLogo.svg" alt="GameJolt logo"></img>
+			</header>
+			<div id="main">
+				<p>Log in to GameJolt to earn trophies, highscores and more!</p>
+				<p class="input-header">Username:</p>
+				<input type="text" id="username" tabindex="1" autofocus></input>
+				<p class="input-header">Game token<span id="extra-space"> </span><a tabindex="0" href="javascript:void(0);" id="token-help">(?)</a>:</p>
+				<p id="token-help-info">You can find your game token on the bottom left of the GameJolt site while you're logged in.</p>
+				<input type="password" id="token" tabindex="2"></input>
+				<button id="loginButton" tabindex="3">Log In</button>
+				<p id="secondaryOptions"><a id="register" href="javascript:void(0);" tabindex="4">Register</a> - <a id="cancel" href="javascript:void(0);" tabindex="4">Cancel</a></p>
+				<p id="login-error">We couldn't log you in! Please check your username and game token and try again.</p>
+			</div>
+		</div>
+
+		<script>
+			var base_uri = "http://gamejolt.com/api/game/v1/";
+
+			document.getElementById("token-help").addEventListener('click', 
+				function()
+				{
+					document.getElementById("token-help-info").style.display = "block";
+					document.getElementById("token-help").style.display = "none";
+					document.getElementById("extra-space").style.display = "none";
+					document.getElementById("token").focus();
+				}, false);
+			//Cancel button
+			document.getElementById("cancel").addEventListener('click', 
+				function()
+				{
+					backToGame();
+				}, false);
+			//Register button
+			document.getElementById("register").addEventListener('click', 
+				function()
+				{
+					window.open("https://gamejolt.com/join");
+				}, false);
+			//Enter key
+			document.getElementById("token").addEventListener("keypress", function(e)
+				{
+					if(e.keyCode == 13)
+					{
+						doLogin();
+					}
+				}, false);
+			document.getElementById("username").addEventListener("keypress", function(e)
+				{
+					if(e.keyCode == 13)
+					{
+						doLogin();
+					}
+				}, false);
+
+			//Escape key
+			document.body.addEventListener("keyup", function(e)
+				{
+					if(e.keyCode == 27)
+					{
+						backToGame();
+					}
+				}, false);
+
+			var isPerformingLogin = false;
+			function doLogin()
+			{
+				if (! isPerformingLogin)
+				{
+					isPerformingLogin = true;
+					//Now logging in...
+					document.getElementById("loginButton").innerHTML = "Logging in...";
+					document.getElementById("login-error").style.display = "none";
+					var uname = document.getElementById("username").value, utoken = document.getElementById("token").value;
+
+					doGJRequest("users/auth", "&username=" + uname + "&user_token=" + utoken,
+						function(response)
+						{
+							resultUserName = uname;
+							resultUserToken = utoken;
+
+							if (isWindow)
+								window.close();
+							else
+							{
+								//Redirect to the previous page
+								var params = "p=" + window.btoa("never_redirect=true&gjapi_username=" + uname + "&gjapi_token=" + utoken).replace(/=/g, "~");
+								if (redirect_to.indexOf("?") <= -1)
+									redirect_to += "?" + params;
+								else
+									redirect_to += "&" + params;
+								window.location.href = redirect_to;
+							}
+						},
+						function (error)
+						{
+							//An error occurred
+							document.getElementById("loginButton").innerHTML = "Log in";
+							document.getElementById("login-error").style.display = "block";
+							isPerformingLogin = false;
+						});
+				}
+			}
+
+			//Go back to the game
+			function backToGame()
+			{
+				if (isWindow)
+					window.close();
+				else
+				{
+					params = "never_redirect=true";
+					if (redirect_to.indexOf("?") <= -1)
+						redirect_to += "?" + params;
+					else
+						redirect_to += "&" + params;
+					window.location.href = redirect_to;
+				}
+			}
+
+			document.getElementById("loginButton").addEventListener('click', doLogin, false);
+
+			var gameID = "", privateKey = "", resultUserName = "", resultUserToken = "", isWindow = false, callbackCaller, redirect_to = "";
+
+			try
+			{
+				//Get URI parameters
+				docURLParameters = window.location.search.replace("?", "");
+				if (docURLParameters != "")
+				{
+					docURLParameterList = docURLParameters.split("&");
+					//Check for encoded params
+					for (var i = 0; i < docURLParameterList.length; i++)
+					{
+						var parameterValue = docURLParameterList[i].split("=");
+						if (parameterValue[0] == "p")
+						{
+							docURLParameterList = window.atob(parameterValue[1].replace(/~/g, "=")).split("&");
+						}
+					}
+					for(var i = 0; i < docURLParameterList.length; ++i)
+					{
+						var parameterValue = docURLParameterList[i].split("=");
+						if (parameterValue[0] == "is_window")
+							isWindow = parameterValue[1] == "true";
+						else if (parameterValue[0] == "redirect_to")
+							redirect_to = decodeURIComponent(parameterValue[1]);
+						else if (parameterValue[0] == "gameid")
+							gameID = parameterValue[1];
+						else if (parameterValue[0] == "private_key")
+							privateKey = parameterValue[1];
+					}
+				}
+			}
+			catch (error)
+			{
+				console.log(error);
+			}
+
+			//Utility functions:
+			function doGJRequest(request_uri, parameter_string, callback, callback_error)
+			{
+				var full_uri = base_uri + request_uri + "?game_id=" + gameID + parameter_string + "&format=json";
+				full_uri += "&signature=" + sha1(full_uri + privateKey);
+				httpGet(full_uri,
+					//Callback when the request succeeded
+					function(response)
+					{
+						//Try to parse the JSON
+						try
+						{
+							var result = JSON.parse(response);
+						}
+						catch (err)
+						{
+							callback_error("Invalid response JSON!");
+							return;
+						}
+						var gj_response = result["response"];
+
+						var success = gj_response["success"];
+
+						if (success == "true")
+							callback(gj_response);
+						else
+						{
+							if (gj_response["message"] != null)
+								callback_error(gj_response["message"]);
+							else
+								callback_error("An unknown error occurred!");
+						}
+					},
+					//Callback when it failed
+					function()
+					{
+						callback_error("HTTP error!");
+					});
+			}
+
+			//Do a HTTP request.
+			function httpGet(uri, callback, callback_error)
+			{
+				var xmlHttp = new XMLHttpRequest();
+				xmlHttp.onreadystatechange = function()
+				{ 
+					if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+						callback(xmlHttp.responseText);
+					else if (xmlHttp.readyState == 4 & callback_error != null)
+						callback_error();
+				}
+				xmlHttp.open("GET", uri, true);
+				xmlHttp.send(null);
+			}
+
+			//SHA1 from php.js (https://github.com/kvz/phpjs):
+
+			/*
+			Copyright:
+			Copyright (c) 2013 Kevin van Zonneveld (http://kvz.io) 
+			and Contributors (http://phpjs.org/authors)
+
+			Permission is hereby granted, free of charge, to any person obtaining a copy of
+			this software and associated documentation files (the "Software"), to deal in
+			the Software without restriction, including without limitation the rights to
+			use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+			of the Software, and to permit persons to whom the Software is furnished to do
+			so, subject to the following conditions:
+
+			The above copyright notice and this permission notice shall be included in all
+			copies or substantial portions of the Software.
+
+			THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+			IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+			FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+			AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+			LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+			OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+			SOFTWARE.
+			*/
+			function sha1(r){var e,o,a,t,c,h,n,f,s,u=function(r,e){var o=r<<e|r>>>32-e;return o},C=function(r){var e,o,a="";for(e=7;e>=0;e--)o=r>>>4*e&15,a+=o.toString(16);return a},d=new Array(80),A=1732584193,p=4023233417,i=2562383102,g=271733878,v=3285377520;r=unescape(encodeURIComponent(r));var b=r.length,k=[];for(o=0;b-3>o;o+=4)a=r.charCodeAt(o)<<24|r.charCodeAt(o+1)<<16|r.charCodeAt(o+2)<<8|r.charCodeAt(o+3),k.push(a);switch(b%4){case 0:o=2147483648;break;case 1:o=r.charCodeAt(b-1)<<24|8388608;break;case 2:o=r.charCodeAt(b-2)<<24|r.charCodeAt(b-1)<<16|32768;break;case 3:o=r.charCodeAt(b-3)<<24|r.charCodeAt(b-2)<<16|r.charCodeAt(b-1)<<8|128}for(k.push(o);k.length%16!=14;)k.push(0);for(k.push(b>>>29),k.push(b<<3&4294967295),e=0;e<k.length;e+=16){for(o=0;16>o;o++)d[o]=k[e+o];for(o=16;79>=o;o++)d[o]=u(d[o-3]^d[o-8]^d[o-14]^d[o-16],1);for(t=A,c=p,h=i,n=g,f=v,o=0;19>=o;o++)s=u(t,5)+(c&h|~c&n)+f+d[o]+1518500249&4294967295,f=n,n=h,h=u(c,30),c=t,t=s;for(o=20;39>=o;o++)s=u(t,5)+(c^h^n)+f+d[o]+1859775393&4294967295,f=n,n=h,h=u(c,30),c=t,t=s;for(o=40;59>=o;o++)s=u(t,5)+(c&h|c&n|h&n)+f+d[o]+2400959708&4294967295,f=n,n=h,h=u(c,30),c=t,t=s;for(o=60;79>=o;o++)s=u(t,5)+(c^h^n)+f+d[o]+3395469782&4294967295,f=n,n=h,h=u(c,30),c=t,t=s;A=A+t&4294967295,p=p+c&4294967295,i=i+h&4294967295,g=g+n&4294967295,v=v+f&4294967295}return s=C(A)+C(p)+C(i)+C(g)+C(v),s.toLowerCase()}
+		</script>
+	</body>
+</html>

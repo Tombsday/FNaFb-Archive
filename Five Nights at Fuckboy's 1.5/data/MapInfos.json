@@ -1,0 +1,12 @@
+[
+null,
+{"id":1,"expanded":true,"name":"Disclaimer","order":1,"parentId":0,"scrollX":529.3333333333334,"scrollY":406},
+{"id":2,"expanded":true,"name":"Title Screen","order":2,"parentId":1,"scrollX":832,"scrollY":640},
+{"id":3,"expanded":false,"name":"Difficulty Screen","order":3,"parentId":2,"scrollX":832,"scrollY":640},
+{"id":4,"expanded":true,"name":"Fuckboy's Pizzeria","order":4,"parentId":0,"scrollX":492,"scrollY":406},
+{"id":5,"expanded":false,"name":"Show Stage & Dining Area","order":5,"parentId":4,"scrollX":832,"scrollY":640},
+{"id":6,"expanded":true,"name":"Fuckboy Factory","order":6,"parentId":0,"scrollX":1092,"scrollY":621.3333333333334},
+{"id":7,"expanded":true,"name":"Parts & Service","order":7,"parentId":6,"scrollX":540.6666666666666,"scrollY":313.3333333333333},
+{"id":8,"expanded":true,"name":"Main Hall","order":8,"parentId":7,"scrollX":540.6666666666666,"scrollY":310.6666666666667},
+{"id":9,"expanded":false,"name":"Entrance","order":9,"parentId":8,"scrollX":539.3333333333334,"scrollY":313.3333333333333}
+]
